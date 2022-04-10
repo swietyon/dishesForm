@@ -102,9 +102,7 @@ const InputBox = () => {
     event.preventDefault();
     const no_of_slices = numberField * 1;
     const diameterValue = diameter * 1.0;
-    console.log(diameter);
     var post;
-    const cos = {"name": "HexOcean pizza", "preparation_time": "01:30:22", "type": "pizza", "no_of_slices": 4, "diameter": 33.4};
 
     switch (type.name) {
       case "pizza":
@@ -120,7 +118,6 @@ const InputBox = () => {
         post = {"name": name, "preparation_time": preparation, "type": type.name, "no_of_slices": no_of_slices, "diameter": diameterValue};
         break;
     }
-    console.log(post);
 
     fetch('https://frosty-wood-6558.getsandbox.com/dishes', {
       method: 'POST',

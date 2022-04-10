@@ -20,7 +20,7 @@ const InputBox = () => {
   const handleDishSelect = (event) => {
     const dish = dishes.find((dish) => dish.name === event.target.value);
     if (dish) {
-      setSelectedDish(dish);
+      setType(dish);
     }
   };
 
@@ -80,7 +80,7 @@ const InputBox = () => {
     },
 
     { 
-      name: 'sandwiches',
+      name: 'sandwich',
       id: 3,
       field: (
         <div className='hidden-options'>
@@ -96,17 +96,41 @@ const InputBox = () => {
       )
     }
   ]);
-  const [selectedDish, setSelectedDish] = useState(dishes[0]);
+  const [type, setType] = useState(dishes[0]);
 
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    const no_of_slices = numberField * 1;
+    const diameterValue = diameter * 1.0;
+    console.log(diameter);
+    var post;
+    const cos = {"name": "HexOcean pizza", "preparation_time": "01:30:22", "type": "pizza", "no_of_slices": 4, "diameter": 33.4};
 
-  console.log(name,preparation,numberField,diameter, selectedDish);
+    switch (type.name) {
+      case "pizza":
+        post = {"name": name, "preparation_time": preparation, "type": type.name, "no_of_slices": no_of_slices, "diameter": diameterValue};
+        break;
+      case "soup":
+        post = {"name": name, "preparation_time": preparation, "type": type.name, "spiciness_scale": no_of_slices};
+        break;
+      case "sandwich":
+        post = {"name": name, "preparation_time": preparation, "type": type.name, "slices_of_bread": no_of_slices};
+        break;
+      default:
+        post = {"name": name, "preparation_time": preparation, "type": type.name, "no_of_slices": no_of_slices, "diameter": diameterValue};
+        break;
+    }
+    console.log(post);
 
-  const handleSubmit = () => {
-    const myName = "name: " + name;
-    const myPreparation = "preparation: " + preparation;
-    const myNumberField = "number of slices: " + numberField;
-    const myDiameter = "diameter: " + diameter;
-    const myType = "type of dish: " + selectedDish;
+    fetch('https://frosty-wood-6558.getsandbox.com/dishes', {
+      method: 'POST',
+      headers: { "Content-Type": "application/json"},
+      body: JSON.stringify(post)
+    }).then(() => {
+      console.log("New dish has been added! :)");
+    }).catch(error => {
+        console.error('Error while adding new dish :(', error);
+    });
   }
   
     return (
@@ -129,7 +153,7 @@ const InputBox = () => {
               <option key={option.id} value={option.name}>{option.name}</option>
             ))}
           </select>
-          {selectedDish && selectedDish.field}
+          {type && type.field}
 
           <button>Add dish</button>
         </form>
